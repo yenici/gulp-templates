@@ -1,0 +1,11 @@
+{
+  "name": "template",
+  "version": "0.1.0",
+  "dependencies": {
+    "normalize-css": "normalize.css#^4.1.1"
+  },
+  "devDependencies": {},
+  "appPath": "app",
+  "moduleName": "template",
+  "overrides": {}
+}

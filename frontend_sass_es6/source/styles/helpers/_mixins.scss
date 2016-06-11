@@ -1,0 +1,19 @@
+/******************************************************************************
+* SASS mixins
+******************************************************************************/
+
+@mixin mediaQuery($size) {
+  @if $size == small {
+    @media screen and (max-width : $device_width_medium - 1px) {
+      @content;
+    }
+  } @else if $size == medium {
+    @media screen and (min-width : $device_width_medium) {
+      @content;
+    }
+  } @else {
+    @media screen and (min-width : $device_width_large) {
+      @content;
+    }
+  }
+}
