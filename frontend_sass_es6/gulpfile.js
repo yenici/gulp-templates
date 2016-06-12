@@ -4,6 +4,7 @@
 var gulp          = require('gulp'),
     connect       = require('gulp-connect'),
     plumber       = require('gulp-plumber'),
+    rename        = require('gulp-rename'),
     rigger        = require('gulp-rigger'),
     rimraf        = require('rimraf'),
     sequence      = require('run-sequence'),
@@ -87,6 +88,9 @@ gulp.task('build:styles', function() {
     .pipe(gulp.dest(path.tmp))
     // .pipe(sourcemaps.init())
     .pipe(cleancss({compatibility: 'ie8'}))
+    .pipe(rename({
+      suffix: '.min'
+    }))
     // .pipe(sourcemaps.write())
     .pipe(gulp.dest(path.dist.styles))
     .pipe(connect.reload());
@@ -102,6 +106,9 @@ gulp.task('build:scripts', function() {
     }))
     // .pipe(sourcemaps.init())
     .pipe(uglify())
+    .pipe(rename({
+      suffix: '.min'
+    }))
     // .pipe(sourcemaps.write())
     .pipe(gulp.dest(path.dist.scripts))
     .pipe(connect.reload());
