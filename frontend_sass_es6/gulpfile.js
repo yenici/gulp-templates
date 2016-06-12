@@ -2,6 +2,9 @@
 
 // gulp modules
 var gulp          = require('gulp'),
+    bowerfiles    = require('gulp-main-bower-files'),
+    flatten       = require('gulp-flatten'),
+
     connect       = require('gulp-connect'),
     plumber       = require('gulp-plumber'),
     rename        = require('gulp-rename'),
@@ -9,7 +12,6 @@ var gulp          = require('gulp'),
     rimraf        = require('rimraf'),
     sequence      = require('run-sequence'),
     filter        = require('gulp-filter'),
-    wiredep       = require('wiredep'),
     sass          = require('gulp-sass'),
     autoprefixer  = require('gulp-autoprefixer'),
     cleancss      = require('gulp-clean-css'),
@@ -60,13 +62,6 @@ gulp.task('clean:dist', function (cb) {
 // H T M L
 gulp.task('build:html', function() {
   return gulp.src(path.source.views + '*.html')
-    // .pipe(wiredep({
-    //   src: path.source.views + '*.html',
-    //   // directory: require('.bowerrc').directory,
-    //   cwd: path.dist.dist,
-    //   exclude: [],
-    //   ignorePath: ''
-    // }))
     .pipe(rigger())
     .pipe(gulp.dest(path.dist.views))
     .pipe(connect.reload());
@@ -114,6 +109,28 @@ gulp.task('build:scripts', function() {
     .pipe(connect.reload());
 });
 
+// B o w e r   C o m p o n e n t s
+gulp.task('build:bower', function() {
+  const FILTER_JS = filter('**/*.js', {restore:  true});
+  const FILTER_CSS = filter('**/*.css', {restore:  true});
+  return gulp.src('./bower.json')
+    .pipe(bowerfiles())
+    .pipe(flatten())
+    .pipe(FILTER_JS)
+    .pipe(uglify())
+    .pipe(rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest(path.dist.scripts))
+    .pipe(FILTER_JS.restore)
+    .pipe(FILTER_CSS)
+    .pipe(cleancss({compatibility: 'ie8'}))
+    .pipe(rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest(path.dist.styles));
+});
+
 // I m a g e s
 gulp.task('build:images', ['build:sprites'],  function() {
   const imagefilter = filter([
@@ -150,7 +167,7 @@ gulp.task('build:sprites', function() {
 gulp.task('build', function(callback) {
   sequence(
     // ['clean:tmp', 'clean:dist'],
-    ['build:html', 'build:scripts', 'build:styles', 'build:images'],
+    ['build:html', 'build:scripts', 'build:styles', 'build:bower', 'build:images'],
     callback
   );
 });
