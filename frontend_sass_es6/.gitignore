@@ -1,2 +1,6 @@
 bower_components/
 node_modules/
+source/tmp/
+source/images/Thumbs.db
+source/images/sprites/Thumbs.db
+dist/images/Thumbs.db

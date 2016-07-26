@@ -18,6 +18,10 @@ var gulp          = require('gulp'),
     jshint        = require('gulp-jshint'),
     jshintstylish = require('jshint-stylish'),
     babel         = require('gulp-babel'),
+    browserify    = require('browserify'),
+    babelify      = require('babelify'),
+    vinylsource   = require('vinyl-source-stream'),
+    utils         = require('gulp-util'),
     uglify        = require('gulp-uglify'),
     spritesmith   = require('gulp.spritesmith'),
     imagemin      = require('gulp-imagemin'),
@@ -25,6 +29,7 @@ var gulp          = require('gulp'),
 
 // Connect server parameters
 var testServer = {
+  // host: '192.168.88.231',
   host: '192.168.0.2',
   port: 8080,
   root: 'dist/'
@@ -35,6 +40,7 @@ var path = {
   source: {
     views: 'source/views/',
     styles: 'source/styles/',
+    fonts: 'source/styles/fonts/',
     images: 'source/images/',
     scripts: 'source/scripts/'
   },
@@ -42,6 +48,7 @@ var path = {
     dist: 'dist/',
     views: 'dist/',
     styles: 'dist/styles/',
+    fonts: 'dist/fonts/',
     images: 'dist/images/',
     scripts: 'dist/scripts/'
   },
@@ -68,7 +75,7 @@ gulp.task('build:html', function() {
 });
 
 // S t y l e s
-gulp.task('build:styles', function() {
+gulp.task('build:styles', ['build:sprites', 'build:fonts'], function() {
   return gulp.src(path.source.styles + '**/*.scss')
     .pipe(sass().on('error', sass.logError), {
       outputStyle: 'expanded',
@@ -91,16 +98,24 @@ gulp.task('build:styles', function() {
     .pipe(connect.reload());
 });
 
+// F o n t s
+gulp.task('build:fonts', function() {
+  return gulp.src(path.source.fonts + '*')
+  .pipe(gulp.dest(path.dist.fonts))
+  .pipe(connect.reload());
+});
+
 // S c r i p t s
 gulp.task('build:scripts', function() {
-  return gulp.src(path.source.scripts + "**/*.js")
-    .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(babel({
-      presets: ['es2015']
-    }))
+  return browserify(path.source.scripts + "main.js")
+    .transform("babelify", {presets: ["es2015"]})
+    .bundle()
+    .on('error', function(e) {
+      utils.log(e);
+    })
+    .pipe(vinylsource('bundle.js'))
     // .pipe(sourcemaps.init())
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(rename({
       suffix: '.min'
     }))
@@ -110,9 +125,9 @@ gulp.task('build:scripts', function() {
 });
 
 // B o w e r   C o m p o n e n t s
-gulp.task('build:bower', function() {
-  const FILTER_JS = filter('**/*.js', {restore:  true});
-  const FILTER_CSS = filter('**/*.css', {restore:  true});
+gulp.task('build:bower', function () {
+  const FILTER_JS = filter('**/*.js', {restore: true});
+  const FILTER_CSS = filter('**/*.css', {restore: true});
   return gulp.src('./bower.json')
     .pipe(bowerfiles())
     .pipe(flatten())
@@ -132,7 +147,7 @@ gulp.task('build:bower', function() {
 });
 
 // I m a g e s
-gulp.task('build:images', ['build:sprites'],  function() {
+gulp.task('build:images',  function() {
   const imagefilter = filter([
     path.source.images + '*.jpg',
     path.source.images + '*.png',
@@ -157,11 +172,10 @@ gulp.task('build:sprites', function() {
       cssFormat: 'scss_maps',
       cssName: '_sprite.scss',
       imgName: 'sprites.png',
-      imgPath: 'sprites.png'
+      imgPath: '../images/sprites.png'
     }));
-    spriteData.img.pipe(gulp.dest(path.source.images));
+    spriteData.img.pipe(gulp.dest(path.dist.images));
     spriteData.css.pipe(gulp.dest(path.source.styles + 'components/'));
-    return true;
 });
 
 gulp.task('build', function(callback) {
@@ -185,6 +199,7 @@ gulp.task('server', function() {
 gulp.task('watch', function() {
   gulp.watch(path.source.views + '**/*.html', ['build:html']);
   gulp.watch(path.source.styles + '**/*.scss', ['build:styles']);
+  gulp.watch(path.source.images + 'sprites/', ['build:styles']);
   gulp.watch(path.source.scripts + '**/*.js', ['build:scripts']);
   gulp.watch(path.source.images, ['build:images']);
 });
