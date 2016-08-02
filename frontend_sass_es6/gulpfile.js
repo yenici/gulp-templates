@@ -1,37 +1,36 @@
 'use strict';
 
 // gulp modules
-var gulp          = require('gulp'),
-    bowerfiles    = require('gulp-main-bower-files'),
-    flatten       = require('gulp-flatten'),
-
-    connect       = require('gulp-connect'),
-    plumber       = require('gulp-plumber'),
-    rename        = require('gulp-rename'),
-    rigger        = require('gulp-rigger'),
-    rimraf        = require('rimraf'),
-    sequence      = require('run-sequence'),
-    filter        = require('gulp-filter'),
-    sass          = require('gulp-sass'),
-    autoprefixer  = require('gulp-autoprefixer'),
-    cleancss      = require('gulp-clean-css'),
-    jshint        = require('gulp-jshint'),
-    jshintstylish = require('jshint-stylish'),
-    babel         = require('gulp-babel'),
-    browserify    = require('browserify'),
-    babelify      = require('babelify'),
-    vinylsource   = require('vinyl-source-stream'),
-    utils         = require('gulp-util'),
-    uglify        = require('gulp-uglify'),
-    spritesmith   = require('gulp.spritesmith'),
-    imagemin      = require('gulp-imagemin'),
-    imageminpng   = require('imagemin-pngquant');
+var gulp        = require('gulp'),
+  bowerfiles    = require('gulp-main-bower-files'),
+  flatten       = require('gulp-flatten'),
+  connect       = require('gulp-connect'),
+  // plumber       = require('gulp-plumber'),
+  rename        = require('gulp-rename'),
+  rigger        = require('gulp-rigger'),
+  // rimraf        = require('rimraf'),
+  sequence      = require('run-sequence'),
+  filter        = require('gulp-filter'),
+  sass          = require('gulp-sass'),
+  autoprefixer  = require('gulp-autoprefixer'),
+  cleancss      = require('gulp-clean-css'),
+  jshint        = require('gulp-jshint'),
+  jshintstylish = require('jshint-stylish'),
+  babel         = require('gulp-babel'),
+  browserify    = require('browserify'),
+  babelify      = require('babelify'),
+  vinylsource   = require('vinyl-source-stream'),
+  utils         = require('gulp-util'),
+  uglify        = require('gulp-uglify'),
+  spritesmith   = require('gulp.spritesmith'),
+  imagemin      = require('gulp-imagemin'),
+  imageminpng   = require('imagemin-pngquant');
 
 // Connect server parameters
 var testServer = {
   // host: '192.168.88.231',
   host: '192.168.0.2',
-  port: 8080,
+  port: 3000,
   root: 'dist/'
 };
 
@@ -84,9 +83,9 @@ gulp.task('build:styles', ['build:sprites', 'build:fonts'], function() {
       precision: 10
     })
     .pipe(autoprefixer({
-			browsers: ['last 2 versions', 'ie >= 8'],
-			cascade: true
-		}))
+      browsers: ['last 2 versions', 'ie >= 8'],
+      cascade: true
+    }))
     .pipe(gulp.dest(path.tmp))
     // .pipe(sourcemaps.init())
     .pipe(cleancss({compatibility: 'ie8'}))
@@ -107,8 +106,8 @@ gulp.task('build:fonts', function() {
 
 // S c r i p t s
 gulp.task('build:scripts', function() {
-  return browserify(path.source.scripts + "main.js")
-    .transform("babelify", {presets: ["es2015"]})
+  return browserify(path.source.scripts + 'main.js')
+    .transform('babelify', {presets: ['es2015']})
     .bundle()
     .on('error', function(e) {
       utils.log(e);
@@ -156,10 +155,10 @@ gulp.task('build:images',  function() {
   return gulp.src(path.source.images + '*')
     .pipe(imagefilter)
     .pipe(imagemin({
-        interlaced: true,
-        progressive: true,
-        svgoPlugins: [{removeViewBox: false}],
-        use: [imageminpng()]
+      interlaced: true,
+      progressive: true,
+      svgoPlugins: [{removeViewBox: false}],
+      use: [imageminpng()]
     }))
     .pipe(gulp.dest(path.dist.images))
     .pipe(connect.reload());
@@ -174,8 +173,8 @@ gulp.task('build:sprites', function() {
       imgName: 'sprites.png',
       imgPath: '../images/sprites.png'
     }));
-    spriteData.img.pipe(gulp.dest(path.dist.images));
-    spriteData.css.pipe(gulp.dest(path.source.styles + 'components/'));
+  spriteData.img.pipe(gulp.dest(path.dist.images));
+  spriteData.css.pipe(gulp.dest(path.source.styles + 'components/'));
 });
 
 gulp.task('build', function(callback) {
