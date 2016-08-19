@@ -1,26 +1,20 @@
 /* global module, require:true */
 
 var gulp = require('gulp'),
-    sequence = require('run-sequence'),
-    buildHtml = require('./gulp/build_html'),
-    buildSprites = require('./gulp/build_sprites'),
-    buildFonts = require('./gulp/build_fonts'),
-    buildStyles = require('./gulp/build_styles'),
-    buildImages = require('./gulp/build_images'),
-    buildScripts = require('./gulp/build_scripts'),
-    clean = require('./gulp/clean'),
-    server = require('./gulp/server'),
-    watch = require('./gulp/watch');
-
-gulp.task('default', function() {
-  sequence(
-    'build',
-    ['server', 'watch']
-  );
-});
+  sequence = require('run-sequence'),
+  buildHtml = require('./gulp/build_html'),
+  buildSprites = require('./gulp/build_sprites'),
+  buildFonts = require('./gulp/build_fonts'),
+  buildStyles = require('./gulp/build_styles'),
+  buildImages = require('./gulp/build_images'),
+  buildScripts = require('./gulp/build_scripts'),
+  clean = require('./gulp/clean'),
+  server = require('./gulp/server'),
+  watch = require('./gulp/watch');
 
 /* ------------------------------- B U I L D ------------------------------- */
 gulp.task('build', function(callback) {
+  'use strict';
   sequence(
     ['clean'],
     ['build:html', 'build:scripts', 'build:styles', 'build:images'],
@@ -44,7 +38,14 @@ gulp.task('build:scripts', buildScripts);
 gulp.task('clean', clean);
 
 /* ------------------------ S T A R T   S E R V E R ------------------------ */
-gulp.task('server', server);
+gulp.task('serve', function() {
+  'use strict';
+  sequence(
+    'build',
+    ['server', 'watch']
+  );
+});
+gulp.task('server',server);
 
 /* ------------------------------- W A T C H ------------------------------- */
 gulp.task('watch', watch);
