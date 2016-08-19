@@ -1,25 +1,31 @@
 /* global module, require:true */
 
-var gulp = require('gulp'),
-  path = require('./pathes'),
-  browserify = require('browserify'),
-  util = require('gulp-util'),
-  vinylsource = require('vinyl-source-stream'),
-  sourcemaps = require('gulp-sourcemaps'),
-  uglify = require('gulp-uglify'),
-  rename = require('gulp-rename'),
-  connect = require('gulp-connect');
+var gulp = require('gulp');
+var path = require('./pathes');
+var browserify = require('browserify');
+var util = require('gulp-util');
+var vinylsource = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var sourcemaps = require('gulp-sourcemaps');
+var uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
+var connect = require('gulp-connect');
 
 module.exports = function() {
-  return browserify(path.source.scripts + 'main.js')
-    .bundle()
+  'use strict';
+  var buf = browserify(path.source.scripts + 'main.js');
+  return buf.bundle()
     .on('error', function(e) {
       util.log(e);
     })
     .pipe(vinylsource('bundle.js'))
-    // .pipe(sourcemaps.init())
-    // .pipe(uglify())
-    // .pipe(sourcemaps.write())
+    .pipe(buffer())
+    .pipe(sourcemaps.init())
+    .pipe(uglify())
+    .on('error', function(e) {
+      util.log(e);
+    })
+    .pipe(sourcemaps.write())
     .pipe(rename({
       suffix: '.min'
     }))
