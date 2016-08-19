@@ -1,6 +1,5 @@
-bower_components/
 node_modules/
-source/tmp/
-source/images/Thumbs.db
-source/images/sprites/Thumbs.db
-dist/images/Thumbs.db
+dist/
+src/tmp/
+src/images/Thumbs.db
+src/images/sprites/Thumbs.db
