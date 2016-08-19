@@ -1,13 +1,13 @@
 /* global module, require:true */
 
 var gulp = require('gulp'),
-    path = require('./pathes'),
-    sass = require('gulp-sass'),
-    autoprefixer = require('gulp-autoprefixer'),
-    sourcemaps = require('gulp-sourcemaps'),
-    cleancss = require('gulp-clean-css'),
-    rename = require('gulp-rename'),
-    connect = require('gulp-connect');
+  path = require('./pathes'),
+  sass = require('gulp-sass'),
+  autoprefixer = require('gulp-autoprefixer'),
+  sourcemaps = require('gulp-sourcemaps'),
+  cleancss = require('gulp-clean-css'),
+  rename = require('gulp-rename'),
+  connect = require('gulp-connect');
 
 module.exports = function() {
   return gulp.src(path.source.styles + 'main.scss')

@@ -1,8 +1,8 @@
 /* global module, require:true */
 
 var gulp = require('gulp'),
-    path = require('./pathes'),
-    spritesmith   = require('gulp.spritesmith');
+  path = require('./pathes'),
+  spritesmith   = require('gulp.spritesmith');
 
 module.exports = function() {
   var spriteData = gulp.src(path.source.images + 'sprites/*.png')

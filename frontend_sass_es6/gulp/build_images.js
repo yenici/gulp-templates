@@ -1,11 +1,11 @@
 /* global module, require:true */
 
 var gulp = require('gulp'),
-    path = require('./pathes'),
-    filter = require('gulp-filter'),
-    imagemin = require('gulp-imagemin'),
-    imageminpng   = require('imagemin-pngquant'),
-    connect = require('gulp-connect');
+  path = require('./pathes'),
+  filter = require('gulp-filter'),
+  imagemin = require('gulp-imagemin'),
+  imageminpng   = require('imagemin-pngquant'),
+  connect = require('gulp-connect');
 
 module.exports = function() {
   // Filtering files to exclude Thumbs.db files
