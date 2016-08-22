@@ -45,7 +45,7 @@
       @content;
     }
   } @else {
-    @media screen and (min-width : $device_width_pc) {
+    @media screen and (min-width : $device_width_desktop) {
       @content;
     }
   }
