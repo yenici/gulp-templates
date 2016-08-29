@@ -14,21 +14,39 @@ var connect = require('gulp-connect');
 module.exports = function() {
   'use strict';
   var buf = browserify(path.source.scripts + 'main.js');
-  return buf.bundle()
-    .on('error', function(e) {
-      util.log(e);
-    })
-    .pipe(vinylsource('bundle.js'))
-    .pipe(buffer())
-    .pipe(sourcemaps.init())
-    .pipe(uglify())
-    .on('error', function(e) {
-      util.log(e);
-    })
-    .pipe(sourcemaps.write())
-    .pipe(rename({
-      suffix: '.min'
-    }))
-    .pipe(gulp.dest(path.dist.scripts))
-    .pipe(connect.reload());
+  if (process.env.NODE_ENV !== 'production') {
+    return buf.bundle()
+      .on('error', function(e) {
+        util.log(e);
+      })
+      .pipe(vinylsource('bundle.js'))
+      .pipe(buffer())
+      .pipe(sourcemaps.init())
+      .on('error', function(e) {
+        util.log(e);
+      })
+      .pipe(sourcemaps.write())
+      .pipe(rename({
+        suffix: '.min'
+      }))
+      .pipe(gulp.dest(path.dist.scripts))
+      .pipe(connect.reload());
+  }
+  else {
+    return buf.bundle()
+      .on('error', function(e) {
+        util.log(e);
+      })
+      .pipe(vinylsource('bundle.js'))
+      .pipe(buffer())
+      .pipe(uglify())
+      .on('error', function(e) {
+        util.log(e);
+      })
+      .pipe(rename({
+        suffix: '.min'
+      }))
+      .pipe(gulp.dest(path.dist.scripts))
+      .pipe(connect.reload());
+  }
 };

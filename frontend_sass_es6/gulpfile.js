@@ -1,5 +1,7 @@
 /* global module, require:true */
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
 var gulp = require('gulp'),
   sequence = require('run-sequence'),
   buildHtml = require('./gulp/build_html'),
@@ -11,6 +13,8 @@ var gulp = require('gulp'),
   clean = require('./gulp/clean'),
   server = require('./gulp/server'),
   watch = require('./gulp/watch');
+
+  console.log('Build environment: ' + process.env.NODE_ENV);
 
 /* ------------------------------- B U I L D ------------------------------- */
 gulp.task('build', function(callback) {
